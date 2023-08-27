@@ -19,8 +19,8 @@ from resources.quiz import blp as QuizBlueprint
 CATEGORY_ID_FOR_STAR_TREK = None
 
 def fetch_star_trek_questions():
-    from otdb import fetch_and_save_questions
-    fetch_and_save_questions(amount=25, category=CATEGORY_ID_FOR_STAR_TREK)
+    from otdb import load_and_save_questions_from_csv
+    load_and_save_questions_from_csv()
 
 def create_app(db_url=None):
     app = Flask(__name__)
