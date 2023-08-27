@@ -1,5 +1,6 @@
 import os
 import secrets
+import requests
 
 from flask import Flask, jsonify
 from flask_smorest import Api
@@ -13,7 +14,13 @@ import cloudinary
 
 from resources.user import blp as UserBlueprint
 from resources.post import blp as PostBlueprint
+from resources.quiz import blp as QuizBlueprint
 
+CATEGORY_ID_FOR_STAR_TREK = None
+
+def fetch_star_trek_questions():
+    from otdb import fetch_and_save_questions
+    fetch_and_save_questions(amount=25, category=CATEGORY_ID_FOR_STAR_TREK)
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -113,9 +120,11 @@ def create_app(db_url=None):
 
     with app.app_context():
         db.create_all()
+        fetch_star_trek_questions()
 
     api.register_blueprint(UserBlueprint)
     api.register_blueprint(PostBlueprint)
+    api.register_blueprint(QuizBlueprint)
 
 
     return app

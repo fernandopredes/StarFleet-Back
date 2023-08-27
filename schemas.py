@@ -100,3 +100,15 @@ class DeletePostSchema(Schema):
 
     class Meta:
         description = "Schema da rota de delete do post"
+
+class QuizSchema(Schema):
+    """
+    Define como a pergunta do quiz deve ser apresentada.
+    """
+    id = fields.Int(dump_only=True, description="ID da pergunta do quiz")
+    question = fields.String(validate=validate.Length(max=500), required=True, description="Pergunta do quiz")
+    correct_answer = fields.String(validate=validate.Length(max=200), required=True, description="Resposta correta")
+    incorrect_answers = fields.String(validate=validate.Length(max=600), required=True, description="Respostas incorretas")
+
+    class Meta:
+        description = "Define como a pergunta do quiz será apresentada"

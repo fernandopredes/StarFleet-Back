@@ -9,3 +9,4 @@ blocklist
 flask-cors
 cloudinary
 psycopg2==2.8.6
+requests
