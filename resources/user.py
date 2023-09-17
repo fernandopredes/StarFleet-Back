@@ -32,12 +32,12 @@ class UserRegister(MethodView):
             name = user_data["name"],
             email = user_data["email"],
             password = pbkdf2_sha256.hash(user_data["password"]),
-            
+
         )
         db.session.add(user)
         db.session.commit()
 
-        return {"message" : "Usuário criado."}, 201
+        return {"message": "Usuário criado."}, 201
 
 @blp.route("/login")
 class UserLogin(MethodView):

@@ -29,6 +29,4 @@ def load_and_save_questions_from_csv(file_path='./questions.csv'):
                     db.session.commit()
                 except Exception as e:
                     db.session.rollback()
-                    print(f"Error saving questions: {e}")
-
-        print(f"{len(questions_set)} unique questions processed.")
+                    
