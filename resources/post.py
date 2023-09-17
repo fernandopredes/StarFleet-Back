@@ -92,7 +92,14 @@ class Post(MethodView):
         """Update de um post"""
         post = PostModel.query.get_or_404(post_id)
 
-        # Get the text fields from request
+        # Pega o usuário atual
+        current_user_id = get_jwt_identity()
+
+        # Verifica se o usuário atual é o criador do post
+        if post.user_id != current_user_id:
+            abort(403, message="You do not have permission to edit this post.")
+
+        # Pega text fields da chamada
         title = request.form.get('title')
         abstract = request.form.get('abstract')
         text = request.form.get('text')
@@ -136,6 +143,12 @@ class Post(MethodView):
     def delete(self, post_id):
         """Deleta um post"""
         post = PostModel.query.get_or_404(post_id)
+        # Pega o usuário atual
+        current_user_id = get_jwt_identity()
+
+        # Verifica se o usuário atual é o criador do post
+        if post.user_id != current_user_id:
+            abort(403, message="You do not have permission to delete this post.")
         db.session.delete(post)
         db.session.commit()
         return {"message":"Post deleted"}, 200
