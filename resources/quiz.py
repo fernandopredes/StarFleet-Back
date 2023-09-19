@@ -14,7 +14,7 @@ class QuizList(MethodView):
     @jwt_required()
     @blp.response(200, QuizSchema(many=True), description="Success. Returns the list of all quizzes.")
     def get(self):
-        """Fetch all quiz questions"""
+        """Busca todas as perguntas"""
         quizzes = QuizModel.query.all()
         quiz_schema = QuizSchema(many=True)
         return quiz_schema.dump(quizzes)
@@ -24,6 +24,6 @@ class Quiz(MethodView):
     @jwt_required()
     @blp.response(200, QuizSchema, description="Success. Returns the quiz question with the given id.")
     def get(self, quiz_id):
-        """Fetch a single quiz question"""
+        """Pega apenas uma pergunta"""
         quiz = QuizModel.query.get_or_404(quiz_id)
         return quiz

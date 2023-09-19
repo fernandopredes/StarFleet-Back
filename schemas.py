@@ -1,4 +1,6 @@
 from marshmallow import Schema, fields, validate
+from datetime import datetime
+from marshmallow import post_dump
 
 class UserSchema(Schema):
     """
@@ -51,9 +53,14 @@ class PostSchema(Schema):
     title = fields.String(validate=validate.Length(max=100), required=True, description="titulo post")
     abstract = fields.String(validate=validate.Length(max=255), required=True, description="resumo do post")
     text = fields.String(validate=validate.Length(max=2200), required=True, description="texto do post")
-    image_one = fields.String(required=True, description="primeira imagem post")
-    image_two = fields.String(required=True, description="secunda post")
     user_id = fields.Int(required=True, description="Id do usuário que criou o post")
+    date = fields.DateTime(description="data de criação do post")
+
+    @post_dump
+    def handle_date(self, data, **kwargs):
+        if isinstance(data.get("date"), str):
+            data["date"] = datetime.fromisoformat(data["date"])
+        return data
 
 
     class Meta:
@@ -67,8 +74,6 @@ class NewPostSchema(Schema):
     title = fields.String(validate=validate.Length(max=100), required=True, description="titulo post")
     abstract = fields.String(validate=validate.Length(max=255), required=True, description="resumo do post")
     text = fields.String(validate=validate.Length(max=2200), required=True, description="texto do post")
-    image_one = fields.String(required=True, description="primeira imagem post")
-    image_two = fields.String(required=True, description="secunda post")
     user_id = fields.Int(required=True, description="Id do usuário que criou o post")
 
 
@@ -83,9 +88,6 @@ class UpdatePostSchema(Schema):
     title = fields.String(validate=validate.Length(max=100), required=False, missing=None, description="titulo post")
     abstract = fields.String(validate=validate.Length(max=255), required=False, missing=None, description="resumo do post")
     text = fields.String(validate=validate.Length(max=2200), required=False, missing=None, description="texto do post")
-    image_one = fields.String(required=False, missing=None, description="primeira imagem do post")
-    image_two = fields.String(required=False, missing=None, description="segunda imagem do post")
-    date = fields.Date(required=False, missing=None, description="data de criação do post")
 
     class Meta:
         description = "Define como o post vai aparecer depois do update"

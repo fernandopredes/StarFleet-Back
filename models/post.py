@@ -9,8 +9,6 @@ class PostModel(db.Model):
     title = db.Column(db.String(120), nullable=False)
     abstract = db.Column(db.String(300), nullable=False)
     text = db.Column(db.String(2200), nullable=False)
-    image_one = db.Column(db.String, nullable=True)
-    image_two = db.Column(db.String, nullable=True)
     date = Column(DateTime(timezone=True), server_default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 

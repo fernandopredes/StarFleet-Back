@@ -6,7 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from db import db
 from models import PostModel
-from schemas import PostSchema, UpdatePostSchema, DeletePostSchema
+from models import UserModel
+from schemas import PostSchema, UpdatePostSchema, DeletePostSchema, NewPostSchema
 
 blp = Blueprint("Posts", __name__, description="Operations with Posts")
 
@@ -16,15 +17,23 @@ class PostList(MethodView):
     @blp.response(200, PostSchema(many=True), description="Success. Returns the list of all posts.")
     def get(self):
         """Pega todos os posts"""
-        posts = PostModel.query.all()
+        posts = PostModel.query.order_by(PostModel.date.desc()).all()
         post_schema = PostSchema(many=True)
-        return post_schema.dump(posts)
+        result = post_schema.dump(posts)
+
+        for post in result:
+            user = UserModel.query.get(post['user_id'])
+            post['username'] = user.name
+            post['profile_pic'] = user.profile_pic
+
+        return result
 
 @blp.route('/create_post', methods=['POST'])
 class PostCreation(MethodView):
     @jwt_required()
+    @blp.arguments(NewPostSchema, location="json")
     @blp.response(200, description="Success. Returns a message confirming the post has been created.")
-    def post(self):
+    def post(self, args):
         """ Rota para criar um post.
 
         Retorna uma mensagem confirmando que o post foi criado.
@@ -34,28 +43,13 @@ class PostCreation(MethodView):
         current_user_id = get_jwt_identity()
 
         # Get the fields from request
-        title = request.form.get('title')
-        abstract = request.form.get('abstract')
-        text = request.form.get('text')
+        title = args['title']
+        abstract = args['abstract']
+        text = args['text']
 
         # Validate the text fields. Return error if not valid.
         if not title or not abstract or not text:
             abort(400, message="Invalid input. Please provide all required fields.")
-
-        image_one_url = None
-        image_two_url = None
-
-        # Check da image_one
-        if 'image_one' in request.files and request.files['image_one'].filename != '':
-            image_one = request.files['image_one']
-            res_one = upload(image_one)
-            image_one_url = res_one['secure_url']
-
-        # Check da image_two
-        if 'image_two' in request.files and request.files['image_two'].filename != '':
-            image_two = request.files['image_two']
-            res_two = upload(image_two)
-            image_two_url = res_two['secure_url']
 
         try:
             # Cria um novo post com as imagens
@@ -64,8 +58,6 @@ class PostCreation(MethodView):
                 title=title,
                 abstract=abstract,
                 text=text,
-                image_one=image_one_url,
-                image_two=image_two_url
             )
 
             db.session.add(new_post)
@@ -87,52 +79,30 @@ class Post(MethodView):
         return post
 
     @jwt_required()
+    @blp.arguments(UpdatePostSchema, location="json")
     @blp.response(200, PostSchema, description="Success. Returns the updated post.")
-    def put(self, post_id):
+    def put(self, post_id, parsed_args):
         """Update de um post"""
         post = PostModel.query.get_or_404(post_id)
 
-        # Pega o usuário atual
+        # pega o usuário atual
         current_user_id = get_jwt_identity()
 
-        # Verifica se o usuário atual é o criador do post
+        # verifica se o usuário é o criador do post
         if post.user_id != current_user_id:
             abort(403, message="You do not have permission to edit this post.")
 
-        # Pega text fields da chamada
-        title = request.form.get('title')
-        abstract = request.form.get('abstract')
-        text = request.form.get('text')
-
-        # Validate the text fields. Return error if not valid.
-        if not title or not abstract or not text:
-            abort(400, message="Invalid input. Please provide all required fields.")
-
-        image_one_url = post.image_one
-        image_two_url = post.image_two
-
-        # Check da image_one
-        if 'image_one' in request.files and request.files['image_one'].filename != '':
-            image_one = request.files['image_one']
-            res_one = upload(image_one)
-            image_one_url = res_one['secure_url']
-
-        # Check da image_two
-        if 'image_two' in request.files and request.files['image_two'].filename != '':
-            image_two = request.files['image_two']
-            res_two = upload(image_two)
-            image_two_url = res_two['secure_url']
+        # atribui os novos valores
+        if parsed_args.get('title'):
+            post.title = parsed_args['title']
+        if parsed_args.get('abstract'):
+            post.abstract = parsed_args['abstract']
+        if parsed_args.get('text'):
+            post.text = parsed_args['text']
 
         try:
-            post.title = title
-            post.abstract = abstract
-            post.text = text
-            post.image_one = image_one_url
-            post.image_two = image_two_url
-
-            db.session.commit()  # commit mudanças no database
-
-            return post
+            db.session.commit()  # commita no db
+            return PostSchema().dump(post)
 
         except Exception as e:
             abort(500, message=str(e))
