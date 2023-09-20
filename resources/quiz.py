@@ -7,12 +7,12 @@ from db import db
 from models.quiz import QuizModel
 from schemas import QuizSchema
 
-blp = Blueprint("Quizzes", __name__, description="Operations with Quizzes")
+blp = Blueprint("Quizzes", __name__, description="Operações com Quizzes")
 
 @blp.route('/quizzes')
 class QuizList(MethodView):
     @jwt_required()
-    @blp.response(200, QuizSchema(many=True), description="Success. Returns the list of all quizzes.")
+    @blp.response(200, QuizSchema(many=True), description="Sucesso. Retorna todas as perguntas.")
     def get(self):
         """Busca todas as perguntas"""
         quizzes = QuizModel.query.all()
@@ -22,7 +22,7 @@ class QuizList(MethodView):
 @blp.route('/quizzes/<int:quiz_id>')
 class Quiz(MethodView):
     @jwt_required()
-    @blp.response(200, QuizSchema, description="Success. Returns the quiz question with the given id.")
+    @blp.response(200, QuizSchema, description="Sucesso. Retorna a pergunta pelo id selecionado")
     def get(self, quiz_id):
         """Pega apenas uma pergunta"""
         quiz = QuizModel.query.get_or_404(quiz_id)

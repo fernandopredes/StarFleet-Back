@@ -9,7 +9,7 @@ from models import PostModel
 from models import UserModel
 from schemas import PostSchema, UpdatePostSchema, DeletePostSchema, NewPostSchema
 
-blp = Blueprint("Posts", __name__, description="Operations with Posts")
+blp = Blueprint("Posts", __name__, description="Operações com Posts")
 
 @blp.route('/posts')
 class PostList(MethodView):
@@ -81,7 +81,7 @@ class Post(MethodView):
     @jwt_required()
     @blp.arguments(UpdatePostSchema, location="json")
     @blp.response(200, PostSchema, description="Success. Returns the updated post.")
-    def put(self, post_id, parsed_args):
+    def put(self, parsed_args, post_id):
         """Update de um post"""
         post = PostModel.query.get_or_404(post_id)
 

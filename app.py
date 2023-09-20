@@ -55,7 +55,7 @@ def create_app(db_url=None):
     api = Api(app)
 
     # Enable CORS
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
     cloudinary.config(
     cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
