@@ -59,7 +59,17 @@ class UserLogin(MethodView):
 
         abort(401, message="Invalid cedentials.")
 
+@blp.route("/users")
+class UsersList(MethodView):
+    @jwt_required()
+    @blp.response(200, UserSchema(many=True), description="Sucesso. Retorna uma lista de todos os usuários.")
+    def get(self):
+        """ Rota para buscar todos os usuários.
 
+        Retorna uma lista de todos os usuários.
+        """
+        users = UserModel.query.all()
+        return users
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
