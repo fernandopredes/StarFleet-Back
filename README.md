@@ -24,13 +24,13 @@ Este backend foi desenvolvido como parte do MVP 3 da pós-graduação da PUC-Rio
 
 ## 🐳 Executando o Projeto com Docker
 
-\```bash
+```bash
 # Construir a imagem
 docker build -t nome-da-imagem .
 
 # Rodar o contêiner
 docker run -p 5000:5000 nome-da-imagem
-\```
+```
 
 ## 📦 Integração com Cloudinary
 
