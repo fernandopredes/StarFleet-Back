@@ -34,7 +34,6 @@ docker run -p 5000:5000 nome-da-imagem
 
 ## 📦 Integração com Cloudinary
 
-A integração com o Cloudinary é realizada através da API, permitindo o armazenamento de imagens. Ao registrar ou atualizar informações de perfil, os usuários podem fazer upload de imagens, que são enviadas diretamente para o Cloudinary. O Cloudinary, por sua vez, retorna uma URL única para cada imagem, que é armazenada em nosso banco de dados. 
+A integração com o Cloudinary é realizada através da API, permitindo o armazenamento de imagens. Ao registrar ou atualizar informações de perfil, os usuários podem fazer upload de imagens, que são enviadas diretamente para o Cloudinary. O Cloudinary, por sua vez, retorna uma URL única para cada imagem, que é armazenada em nosso banco de dados.
 
-Para configurar a integração em um ambiente de desenvolvimento, é necessário fornecer as credenciais do Cloudinary, que incluem um `CLOUD_NAME`, `API_KEY` e `API_SECRET`. Estas são configuradas como variáveis de ambiente e são usadas pela aplicação Flask para autenticar e interagir com o serviço Cloudinary.
-
+Para configurar a integração em um ambiente de desenvolvimento você deve retirar o final ".example" do arquivo .env e fornecer as credenciais do Cloudinary, que incluem um `CLOUD_NAME`, `API_KEY` e `API_SECRET`. Estas são configuradas como variáveis de ambiente e são usadas pela aplicação Flask para autenticar e interagir com o serviço Cloudinary.
