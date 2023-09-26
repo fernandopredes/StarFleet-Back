@@ -1,4 +1,4 @@
-# StarFleet - Back
+# StarFleet - Back🌌🖖
 
 Este backend foi desenvolvido como parte do MVP 3 da pós-graduação da PUC-Rio. A aplicação foi criada pensando nos fãs de Star Trek, fornecendo uma plataforma onde os usuários podem se autenticar, postar conteúdos, participar de quizzes e ver novos conteúdos.
 
